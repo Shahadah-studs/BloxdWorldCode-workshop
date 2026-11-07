@@ -1,3 +1,5 @@
+let currentActiveModCode = "";
+
 function switchTab(tabName) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active-content'));
@@ -42,18 +44,61 @@ async function fetchMods() {
                     <div class="author">by ${escapeHTML(mod.creator)}</div>
                     <p>${escapeHTML(mod.description)}</p>
                 </div>
-                <button class="copy-btn" id="btn-${mod.id}">📋 Copy Code</button>
+                <button class="view-btn">🔍 Inspect & Copy</button>
             `;
-            grid.appendChild(card);
             
-            document.getElementById(`btn-${mod.id}`).addEventListener('click', function() {
-                copyCode(this, mod.code_content);
+            // Open interactive layout preview modal on card click
+            card.addEventListener('click', () => {
+                openModal(mod);
             });
+            
+            grid.appendChild(card);
         });
     } catch (err) {
         grid.innerHTML = `<p style="color: red;">Failed to connect to backend api.</p>`;
     }
 }
+
+// Modal handling routines
+function openModal(mod) {
+    currentActiveModCode = mod.code_content;
+    
+    document.getElementById('modal-title').innerText = mod.title;
+    document.getElementById('modal-creator').innerText = mod.creator;
+    document.getElementById('modal-description').innerText = mod.description;
+    document.getElementById('modal-code').innerText = mod.code_content;
+    
+    const modal = document.getElementById('mod-modal');
+    modal.classList.add('open');
+}
+
+function closeModal() {
+    const modal = document.getElementById('mod-modal');
+    modal.classList.remove('open');
+}
+
+// Attach explicit listener to copy button inside the preview layout popup
+document.getElementById('modal-copy-btn').addEventListener('click', function() {
+    const button = this;
+    navigator.clipboard.writeText(currentActiveModCode).then(() => {
+        const originalText = button.innerHTML;
+        button.innerHTML = "✅ Copied Payload!";
+        button.style.background = "var(--success)";
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.style.background = "var(--accent)";
+        }, 2000);
+    }).catch(() => {
+        alert("Clipboard integration failed inside parent iframe container.");
+    });
+});
+
+// Close modal if user clicks outside content container box area
+document.getElementById('mod-modal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('mod-modal')) {
+        closeModal();
+    }
+});
 
 document.getElementById('mod-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -84,20 +129,6 @@ document.getElementById('mod-form').addEventListener('submit', async (e) => {
         alert("Submission failed.");
     }
 });
-
-function copyCode(button, text) {
-    navigator.clipboard.writeText(text).then(() => {
-        const originalText = button.innerHTML;
-        button.innerHTML = "✅ Copied!";
-        button.style.borderColor = "var(--success)";
-        setTimeout(() => {
-            button.innerHTML = originalText;
-            button.style.borderColor = "var(--border)";
-        }, 2000);
-    }).catch(() => {
-        alert("Clipboard action blocked. Ensure iframe permissions are set.");
-    });
-}
 
 function escapeHTML(str) {
     return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
