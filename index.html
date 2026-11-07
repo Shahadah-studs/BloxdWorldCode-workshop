@@ -21,7 +21,7 @@
             <p class="subtitle">Share and discover world codes, commands, scripts, and custom UI tweaks.</p>
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('browse')">Browse Mods</button>
-                      <button class="tab-btn" onclick="switchTab('trending')">🔥 Trending</button>
+                      <button class="tab-btn" onclick="switchTab('trending')">Trending</button>
                 <button class="tab-btn" onclick="switchTab('submit')">Submit Mod</button>
             </div>
         </header>
@@ -32,7 +32,7 @@
             <div class="search-container" style="margin-bottom: 25px; width: 100%;">
                 <input type="text" id="search-bar" placeholder="🔎 Search mods by title, creator, or description..." oninput="filterMods()" style="width: 100%; box-sizing: border-box; background: var(--bg-input); border: 2px solid var(--border); padding: 14px; color: #ffffff; font-family: inherit; font-size: 1rem; outline: none; transition: border-color 0.2s;">
             </div>
-            <div id="mods-loading" class="loading">Loading workshop mods...</div>
+            <div id="mods-loading" class="loading">Loading....</div>
             <div id="mods-grid" class="mods-grid"></div>
         </main>
    <div class="pagination-container" style="text-align: center; margin-top: 30px;">
@@ -54,7 +54,7 @@
                     <input type="text" id="title" maxlength="100" placeholder="e.g., Infinite Jump Script, Custom Crosshair..." required>
                 </div>
                 <div class="form-group">
-                    <label for="creator">Creator Name</label>
+                    <label for="creator">Username</label>
                     <input type="text" id="creator" maxlength="50" placeholder="Your username... " required>
                 </div>
                 <div class="form-group">
@@ -81,7 +81,7 @@
                 <div class="modal-meta">Published by <span id="modal-creator" class="highlight"></span></div>
                 <p id="modal-description"></p>
                 
-                <label class="block-label">Code Preview</label>
+                <label class="block-label"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hat-glasses preview-icon"><path d="M14 18a2 2 0 0 0-4 0"/><path d="m19 11-2.11-6.657a2 2 0 0 0-2.752-1.148l-1.276.61A2 2 0 0 1 12 4H8.5a2 2 0 0 0-1.925 1.456L5 11"/><path d="M2 11h20"/><circle cx="17" cy="18" r="3"/><circle cx="7" cy="18" r="3"/></svg> Code Preview</label>
                 <!-- Rounded box containing the code preview -->
                 <div class="code-preview-box">
                     <pre><code id="modal-code"></code></pre>
