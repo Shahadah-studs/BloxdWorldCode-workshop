@@ -47,9 +47,26 @@ async function fetchMods() {
         filteredModsList = allDownloadedMods;
         renderNextBatch();
 
+        
+        checkURLHashForMod();
+
     } catch (err) {
         loading.style.display = 'none';
         grid.innerHTML = `<p style="color: red;">Failed to connect to backend api.</p>`;
+    }
+}
+
+function checkURLHashForMod() {
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#mod-')) {
+        const targetId = parseInt(hash.replace('#mod-', ''));
+        // Cherche le mod dans la liste complète téléchargée
+        const targetMod = allDownloadedMods.find(m => m.id === targetId);
+        
+        if (targetMod) {
+            // Ouvre automatiquement la fenêtre pop-up du mod
+            openModal(targetMod);
+        }
     }
 }
 
@@ -76,19 +93,14 @@ function renderNextBatch() {
     const batchToRender = filteredModsList.slice(visibleCount, nextLimit);
 
     if (batchToRender.length === 0 && visibleCount === 0) {
-        grid.innerHTML = `<p style="color: var(--text-muted); padding: 20px;">No matching workshop items found. <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-x preview-icon"><path d="m13.5 8.5-5 5"/><path d="m8.5 8.5 5 5"/><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></p>`;
+        grid.innerHTML = `<p style="color: var(--text-muted); padding: 20px;">No matching workshop items found.</p>`;
         loadMoreBtn.style.display = 'none';
         return;
     }
 
     batchToRender.forEach(mod => {
-        // --- Calculate code metrics on the fly ---
         const codePayload = mod.code_content || "";
-        
-        // 1. Calculate Line Count
         const lineCount = codePayload.split('\n').length;
-        
-        // 2. Calculate Size in Kilobytes (KB)
         const byteLength = new Blob([codePayload]).size;
         const kbSize = (byteLength / 1024).toFixed(2);
 
@@ -99,7 +111,6 @@ function renderNextBatch() {
                 <h3>${escapeHTML(mod.title)}</h3>
                 <div class="author">by ${escapeHTML(mod.creator)}</div>
                 
-                <!-- On-the-fly metric badges -->
                 <div class="mod-meta-badges">
                     <span class="meta-badge">📋 ${lineCount} Line${lineCount !== 1 ? 's' : ''}</span>
                     <span class="meta-badge">💾 ${kbSize} KB</span>
@@ -126,22 +137,64 @@ function openModal(mod) {
     document.getElementById('modal-creator').innerText = mod.creator;
     document.getElementById('modal-description').innerText = mod.description;
     document.getElementById('modal-code').innerText = mod.code_content;
+    
+    window.location.hash = `mod-${mod.id}`;
+    
     document.getElementById('mod-modal').classList.add('open');
 }
 
-function closeModal() { document.getElementById('mod-modal').classList.remove('open'); }
+function closeModal() { 
+    document.getElementById('mod-modal').classList.remove('open');
+    // Nettoie l'URL quand on ferme le pop-up en enlevant le hashtag
+    history.replaceState(null, null, ' ');
+}
 
 document.getElementById('modal-copy-btn').addEventListener('click', function() {
-    navigator.clipboard.writeText(currentActiveModCode).then(() => {
-        const originalText = this.innerHTML;
-        this.innerHTML = "Copied!";
-        this.style.background = "var(--success)";
-        setTimeout(() => {
-            this.innerHTML = originalText;
-            this.style.background = "var(--accent)";
-        }, 2000);
-    });
+    const button = this;
+    const textToCopy = currentActiveModCode;
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            handleCopySuccess(button);
+        }).catch(() => {
+            executeFallbackCopy(textToCopy, button);
+        });
+    } else {
+        executeFallbackCopy(textToCopy, button);
+    }
 });
+
+function executeFallbackCopy(text, button) {
+    try {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.top = "-9999px";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        const successful = document.execCommand("copy");
+        document.body.removeChild(textarea);
+        if (successful) {
+            handleCopySuccess(button);
+        } else {
+            alert("Copying failed.");
+        }
+    } catch (err) {
+        alert("Clipboard action blocked.");
+    }
+}
+
+function handleCopySuccess(button) {
+    const originalText = button.innerHTML;
+    button.innerHTML = "Copied!";
+    button.style.background = "var(--success)";
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.style.background = "var(--bg-input)";
+    }, 2000);
+}
 
 document.getElementById('mod-modal').addEventListener('click', (e) => {
     if (e.target === document.getElementById('mod-modal')) { closeModal(); }
