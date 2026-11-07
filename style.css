@@ -299,3 +299,17 @@ body {
 .copy-action:hover { border-color: var(--text-main); }
 .close-action { background: var(--bg-main); color: var(--text-body); }
 .loading { text-align: center; color: var(--text-main); padding: 50px; font-size: 1.1rem; }
+.workshop-footer {
+    text-align: center;
+    padding: 30px 20px;
+    margin-top: 50px;
+    border-top: 1px solid var(--border);
+}
+
+.workshop-footer p {
+    font-size: 0.8rem;
+    color: var(--text-muted); /* Soft, muted dark green text to keep it readable but subtle */
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
