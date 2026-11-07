@@ -328,4 +328,22 @@ body {
     padding: 3px 8px;
     letter-spacing: 0.5px;
 }
+/* Custom Back Button Link */
+.back-link, .back-link:visited {
+    color: var(--text-main) !important; /* Forces your custom green text, even after clicking it */
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border: 2px solid var(--border);
+    padding: 8px 16px;
+    background: var(--bg-card);
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.back-link:hover {
+    border-color: var(--text-main);
+    background: var(--bg-input);
+    color: var(--text-main) !important;
+}
 
