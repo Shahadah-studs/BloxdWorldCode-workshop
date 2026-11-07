@@ -1,0 +1,9 @@
+{
+  "name": "bloxdworldcode-workshop",
+  "version": "1.0.0",
+  "description": "Secure API middleware for BloxdWorldCode Mod Workshop",
+  "main": "index.html",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  }
+}
