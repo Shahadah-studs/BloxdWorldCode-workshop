@@ -60,11 +60,11 @@ function checkURLHashForMod() {
     const hash = window.location.hash;
     if (hash && hash.startsWith('#mod-')) {
         const targetId = parseInt(hash.replace('#mod-', ''));
-        // Cherche le mod dans la liste complète téléchargée
+       
         const targetMod = allDownloadedMods.find(m => m.id === targetId);
         
         if (targetMod) {
-            // Ouvre automatiquement la fenêtre pop-up du mod
+           
             openModal(targetMod);
         }
     }
@@ -112,7 +112,7 @@ function renderNextBatch() {
                 <div class="author">by ${escapeHTML(mod.creator)}</div>
                 
                 <div class="mod-meta-badges">
-                    <span class="meta-badge">📋 ${lineCount} Line${lineCount !== 1 ? 's' : ''}</span>
+                    <span class="meta-badge"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-list preview-icon"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg> ${lineCount} Line${lineCount !== 1 ? 's' : ''}</span>
                     <span class="meta-badge"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file preview-icon"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/></svg> ${kbSize} KB</span>
                 </div>
 
