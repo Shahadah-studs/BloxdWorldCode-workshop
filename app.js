@@ -1,7 +1,8 @@
 let currentActiveModCode = "";
-let allDownloadedMods = []; // Global memory array holding items
-let visibleCount = 0; // Tracks currently displayed item count
-const PAGE_SIZE = 5; // Enforces exactly 5 entries per view slice
+let allDownloadedMods = []; 
+let filteredModsList = []; // Array to hold filtered search query matches
+let visibleCount = 0; 
+const PAGE_SIZE = 5; 
 
 function switchTab(tabName) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -13,7 +14,7 @@ function switchTab(tabName) {
     document.getElementById(`tab-${tabName}`).classList.add('active-content');
     
     if (tabName === 'browse') { 
-        // Reset counters and pull fresh data when viewing the browser tab
+        document.getElementById('search-bar').value = ""; // Clear query on tab switch
         visibleCount = 0;
         fetchMods(); 
     }
@@ -43,7 +44,8 @@ async function fetchMods() {
             return;
         }
 
-        // Render the first segment batch of 5 items
+        // Initialize our filtered list with all downloaded data
+        filteredModsList = allDownloadedMods;
         renderNextBatch();
 
     } catch (err) {
@@ -52,13 +54,35 @@ async function fetchMods() {
     }
 }
 
+// Instant client-side text filtering engine
+function filterMods() {
+    const query = document.getElementById('search-bar').value.toLowerCase().trim();
+    const grid = document.getElementById('mods-grid');
+    
+    // Filter the locally cached mods array instantly as the user types :P
+    filteredModsList = allDownloadedMods.filter(mod => 
+        mod.title.toLowerCase().includes(query) || 
+        mod.creator.toLowerCase().includes(query) || 
+        mod.description.toLowerCase().includes(query)
+    );
+
+    grid.innerHTML = "";
+    visibleCount = 0;
+    renderNextBatch();
+}
+
 function renderNextBatch() {
     const grid = document.getElementById('mods-grid');
     const loadMoreBtn = document.getElementById('load-more-btn');
     
-    // Calculate boundaries for slicing the next 5 items
-    const nextLimit = Math.min(visibleCount + PAGE_SIZE, allDownloadedMods.length);
-    const batchToRender = allDownloadedMods.slice(visibleCount, nextLimit);
+    const nextLimit = Math.min(visibleCount + PAGE_SIZE, filteredModsList.length);
+    const batchToRender = filteredModsList.slice(visibleCount, nextLimit);
+
+    if (batchToRender.length === 0 && visibleCount === 0) {
+        grid.innerHTML = `<p style="color: var(--text-muted); padding: 20px;">No matching workshop items found.</p>`;
+        loadMoreBtn.style.display = 'none';
+        return;
+    }
 
     batchToRender.forEach(mod => {
         const card = document.createElement('div');
@@ -76,18 +100,10 @@ function renderNextBatch() {
         grid.appendChild(card);
     });
 
-    // Update global tracking index tracker
     visibleCount = nextLimit;
-
-    // Show button if there are more mods left to load, hide if we hit the end
-    if (visibleCount < allDownloadedMods.length) {
-        loadMoreBtn.style.display = 'block';
-    } else {
-        loadMoreBtn.style.display = 'none';
-    }
+    loadMoreBtn.style.display = (visibleCount < filteredModsList.length) ? 'block' : 'none';
 }
 
-// Bind listener to the Load More button component
 document.getElementById('load-more-btn').addEventListener('click', renderNextBatch);
 
 function openModal(mod) {
@@ -99,19 +115,16 @@ function openModal(mod) {
     document.getElementById('mod-modal').classList.add('open');
 }
 
-function closeModal() {
-    document.getElementById('mod-modal').classList.remove('open');
-}
+function closeModal() { document.getElementById('mod-modal').classList.remove('open'); }
 
 document.getElementById('modal-copy-btn').addEventListener('click', function() {
-    const button = this;
     navigator.clipboard.writeText(currentActiveModCode).then(() => {
-        const originalText = button.innerHTML;
-        button.innerHTML = "✅ Copied Payload!";
-        button.style.background = "var(--success)";
+        const originalText = this.innerHTML;
+        this.innerHTML = "✅ Copied Payload!";
+        this.style.background = "var(--success)";
         setTimeout(() => {
-            button.innerHTML = originalText;
-            button.style.background = "var(--accent)";
+            this.innerHTML = originalText;
+            this.style.background = "var(--accent)";
         }, 2000);
     });
 });
@@ -122,7 +135,6 @@ document.getElementById('mod-modal').addEventListener('click', (e) => {
 
 document.getElementById('mod-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
     const payload = {
         title: document.getElementById('title').value,
         creator: document.getElementById('creator').value,
@@ -139,7 +151,7 @@ document.getElementById('mod-form').addEventListener('submit', async (e) => {
         const result = await response.json();
 
         if (result.error) {
-            alert(result.error); // Shows the countdown alert to the user natively
+            alert(result.error);
         } else {
             alert("Mod securely published!");
             document.getElementById('mod-form').reset();
@@ -155,4 +167,3 @@ function escapeHTML(str) {
 }
 
 window.onload = fetchMods;
-
