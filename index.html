@@ -21,6 +21,7 @@
             <p class="subtitle">Share and discover world codes, commands, scripts, and custom UI tweaks.</p>
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('browse')">Browse Mods</button>
+                      <button class="tab-btn" onclick="switchTab('trending')">🔥 Trending</button>
                 <button class="tab-btn" onclick="switchTab('submit')">Submit Mod</button>
             </div>
         </header>
@@ -38,6 +39,13 @@
                 <button id="load-more-btn" class="submit-btn" style="display: none; max-width: 200px; margin: 0 auto;">Load More</button>
             </div>
         </main>
+            <section id="tab-trending" class="tab-content">
+            <div style="margin-bottom: 25px;">
+                <h2 style="margin: 0 0 5px 0; color: var(--text-main);">🔥 Trending/h2>
+                <p style="margin: 0; color: var(--text-body); font-size: 0.9rem;">Freshly selected configurations and hot scripts from the community feed.</p>
+            </div>
+            <div id="trending-grid" class="mods-grid"></div>
+        </section>
         <!-- Tab: Submit Mod -->
         <section id="tab-submit" class="tab-content">
             <form id="mod-form" class="mod-form">
