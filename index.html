@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloxdWorldCode - Workshop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="workshop-container">
+        <header class="workshop-header">
+            <h2>BloxdWorldCode | Mod Workshop</h2>
+            <p>Share and discover world codes, scripts, and UI tweaks.</p>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('browse')">Browse Mods</button>
+                <button class="tab-btn" onclick="switchTab('submit')">Submit Mod</button>
+            </div>
+        </header>
+
+        <main id="tab-browse" class="tab-content active-content">
+            <div id="mods-loading" class="loading">Loading workshop items...</div>
+            <div id="mods-grid" class="mods-grid"></div>
+        </main>
+
+        <section id="tab-submit" class="tab-content">
+            <form id="mod-form" class="mod-form">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" maxlength="100" placeholder="e.g., Infinite Jump Script, Custom Crosshair Layout..." required>
+                </div>
+                <div class="form-group">
+                    <label for="creator">Creator Name</label>
+                    <input type="text" id="creator" maxlength="50" placeholder="Your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" rows="3" maxlength="500" placeholder="What does this mod/code do?" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="code">Code / Payload</label>
+                    <textarea id="code" class="code-input" rows="8" placeholder="Paste your Bloxd.io commands, CSS, or script code here..." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Publish to Workshop</button>
+            </form>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
