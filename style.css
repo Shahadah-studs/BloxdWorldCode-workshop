@@ -1,0 +1,119 @@
+:root {
+    --bg-main: #12131a;
+    --bg-card: #1c1d26;
+    --bg-input: #252733;
+    --text-main: #f1f3f9;
+    --text-muted: #9499b3;
+    --accent: #4f46e5;
+    --accent-hover: #6366f1;
+    --border: #2d3142;
+    --success: #10b981;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+}
+
+.workshop-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.workshop-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+}
+
+.workshop-header h2 { margin: 0 0 5px 0; font-size: 1.8rem; }
+.workshop-header p { margin: 0 0 20px 0; color: var(--text-muted); }
+
+.tabs { display: flex; gap: 10px; }
+.tab-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.tab-btn.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.tab-content { display: none; }
+.tab-content.active-content { display: block; }
+
+.mods-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.mod-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.mod-card h3 { margin: 0 0 5px 0; font-size: 1.25rem; }
+.mod-card .author { font-size: 0.85rem; color: var(--accent); margin-bottom: 12px; }
+.mod-card p { color: var(--text-muted); font-size: 0.95rem; margin: 0 0 15px 0; line-height: 1.4; }
+
+.copy-btn {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+.copy-btn:hover { background: var(--border); }
+
+.mod-form {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 25px;
+    border-radius: 8px;
+    max-width: 600px;
+}
+.form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+.form-group label { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); }
+.form-group input, .form-group textarea {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    color: var(--text-main);
+    font-family: inherit;
+}
+.form-group textarea.code-input { font-family: monospace; font-size: 0.9rem; background: #15161e; }
+.submit-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+}
+.submit-btn:hover { background: var(--accent-hover); }
+.loading { text-align: center; color: var(--text-muted); padding: 40px; }
