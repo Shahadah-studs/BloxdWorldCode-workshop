@@ -1,6 +1,6 @@
 let currentActiveModCode = "";
 let allDownloadedMods = []; 
-let filteredModsList = []; // Array to hold filtered search query matches
+let filteredModsList = []; 
 let visibleCount = 0; 
 const PAGE_SIZE = 5; 
 
@@ -14,7 +14,7 @@ function switchTab(tabName) {
     document.getElementById(`tab-${tabName}`).classList.add('active-content');
     
     if (tabName === 'browse') { 
-        document.getElementById('search-bar').value = ""; // Clear query on tab switch
+        document.getElementById('search-bar').value = ""; 
         visibleCount = 0;
         fetchMods(); 
     }
@@ -44,7 +44,6 @@ async function fetchMods() {
             return;
         }
 
-        // Initialize our filtered list with all downloaded data
         filteredModsList = allDownloadedMods;
         renderNextBatch();
 
@@ -54,12 +53,10 @@ async function fetchMods() {
     }
 }
 
-// Instant client-side text filtering engine
 function filterMods() {
     const query = document.getElementById('search-bar').value.toLowerCase().trim();
     const grid = document.getElementById('mods-grid');
     
-    // Filter the locally cached mods array instantly as the user types :P
     filteredModsList = allDownloadedMods.filter(mod => 
         mod.title.toLowerCase().includes(query) || 
         mod.creator.toLowerCase().includes(query) || 
@@ -79,21 +76,38 @@ function renderNextBatch() {
     const batchToRender = filteredModsList.slice(visibleCount, nextLimit);
 
     if (batchToRender.length === 0 && visibleCount === 0) {
-        grid.innerHTML = `<p style="color: var(--text-muted); padding: 20px;">No matching workshop items found.</p>`;
+        grid.innerHTML = `<p style="color: var(--text-muted); padding: 20px;">No matching workshop items found. <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-x preview-icon"><path d="m13.5 8.5-5 5"/><path d="m8.5 8.5 5 5"/><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></p>`;
         loadMoreBtn.style.display = 'none';
         return;
     }
 
     batchToRender.forEach(mod => {
+        // --- Calculate code metrics on the fly ---
+        const codePayload = mod.code_content || "";
+        
+        // 1. Calculate Line Count
+        const lineCount = codePayload.split('\n').length;
+        
+        // 2. Calculate Size in Kilobytes (KB)
+        const byteLength = new Blob([codePayload]).size;
+        const kbSize = (byteLength / 1024).toFixed(2);
+
         const card = document.createElement('div');
         card.className = 'mod-card';
         card.innerHTML = `
             <div>
                 <h3>${escapeHTML(mod.title)}</h3>
                 <div class="author">by ${escapeHTML(mod.creator)}</div>
+                
+                <!-- On-the-fly metric badges -->
+                <div class="mod-meta-badges">
+                    <span class="meta-badge">📋 ${lineCount} Line${lineCount !== 1 ? 's' : ''}</span>
+                    <span class="meta-badge">💾 ${kbSize} KB</span>
+                </div>
+
                 <p>${escapeHTML(mod.description)}</p>
             </div>
-            <button class="view-btn">🔍 Inspect & Copy</button>
+            <button class="view-btn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-code preview-icon"><path d="m13 13.5 2-2.5-2-2.5"/><path d="m21 21-4.3-4.3"/><path d="M9 8.5 7 11l2 2.5"/><circle cx="11" cy="11" r="8"/></svg> Inspect & Copy</button>
         `;
         
         card.addEventListener('click', () => openModal(mod));
@@ -120,7 +134,7 @@ function closeModal() { document.getElementById('mod-modal').classList.remove('o
 document.getElementById('modal-copy-btn').addEventListener('click', function() {
     navigator.clipboard.writeText(currentActiveModCode).then(() => {
         const originalText = this.innerHTML;
-        this.innerHTML = "✅ Copied Payload!";
+        this.innerHTML = "Copied!";
         this.style.background = "var(--success)";
         setTimeout(() => {
             this.innerHTML = originalText;
@@ -167,3 +181,4 @@ function escapeHTML(str) {
 }
 
 window.onload = fetchMods;
+
