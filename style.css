@@ -346,4 +346,11 @@ body {
     background: var(--bg-input);
     color: var(--text-main) !important;
 }
-
+.submit-btn:disabled {
+    background: #1e2921 !important; /* Dark, dead green color */
+    color: #526356 !important;      /* Dull muted text color */
+    border: 2px solid #1e2921 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
