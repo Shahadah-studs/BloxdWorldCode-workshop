@@ -354,3 +354,19 @@ body {
     box-shadow: none !important;
     transform: none !important;
 }
+
+.mod-card {
+    transition: border-color 0.3s ease, transform 0.2s ease !important;
+}
+.mod-card:hover {
+    border-color: var(--text-main) !important;
+    transform: translateY(-3px) !important;
+}
+/* the "glassimorphism"  CSS*/
+.modal-overlay {
+    backdrop-filter: blur(12px) !important; 
+    background: rgba(12, 17, 13, 0.95) !important;
+}
+.modal-content {
+    border: 2px solid var(--text-main) !important; 
+}
