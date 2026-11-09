@@ -100,7 +100,7 @@ function renderNextBatch() {
 
     batchToRender.forEach(mod => {
         const codePayload = mod.code_content || "";
-        const lineCount = codePayload.split(/\r\n|\r|\n/).length;
+        const lineCount = codePayload.split('\n').length;
         const byteLength = new Blob([codePayload]).size;
         const kbSize = (byteLength / 1024).toFixed(2);
 
