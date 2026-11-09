@@ -362,7 +362,7 @@ body {
     border-color: var(--text-main) !important;
     transform: translateY(-3px) !important;
 }
-/* the "glassimorphism"  CSS*/
+/* the "glassimorphism"  CSS
 .modal-overlay {
     backdrop-filter: blur(12px) !important; 
     background: rgba(12, 17, 13, 0.95) !important;
@@ -370,3 +370,4 @@ body {
 .modal-content {
     border: 2px solid var(--text-main) !important; 
 }
+*/
